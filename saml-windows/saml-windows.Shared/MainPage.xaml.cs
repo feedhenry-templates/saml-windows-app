@@ -39,12 +39,11 @@ namespace saml_windows
             }
         }
 
-        async void LoadCompleted(object sender, NavigationEventArgs e)
+        void LoadCompleted(object sender, NavigationEventArgs e)
         {
             if (e.Uri.AbsolutePath.Contains("login/ok"))
             {
                 ShowSignedIn();
-                await new MessageDialog("Great, you're signed in!").ShowAsync();
             }
         }
 

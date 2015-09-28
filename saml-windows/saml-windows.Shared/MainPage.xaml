@@ -6,15 +6,19 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     FontSize="15"
+    RequestedTheme="Light"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <ProgressBar Name="progress" IsIndeterminate="True" Height="10"/>
-        <StackPanel Name="app" Visibility="Collapsed">
-            <TextBlock FontSize="40">SAML Client Example</TextBlock>
+        <StackPanel Name="progress" Visibility="Visible" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <ProgressRing IsActive="True"/>
+            <TextBlock>Communicating with the server</TextBlock>
+        </StackPanel>
+
+        <StackPanel Name="app" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10">
             <StackPanel Name="signIn">
                 <TextBlock>Click the "Sign In" button below to sign in via your configured SAML IdP</TextBlock>
-                <Button Click="Button_Click">Sign In</Button>
+                <Button Click="Button_Click" HorizontalAlignment="Stretch">Sign In</Button>
             </StackPanel>
             <Grid Name="signedIn" Visibility="Collapsed">
                 <Grid.RowDefinitions>
@@ -22,23 +26,25 @@
                     <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
                 
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                
-                <TextBlock>Name:</TextBlock>
-                <TextBlock Grid.Column="1" Name="name"/>
 
-                <TextBlock Grid.Row="1">Email:</TextBlock>
-                <TextBlock Grid.Row="1" Grid.Column="1" Name="email"/>
+                <TextBlock Grid.ColumnSpan="2" HorizontalAlignment="Center" FontSize="20">Great! You're signed in.</TextBlock>
+                <Image Grid.Row="1" Source="Assets/ic_face_black.png" Height="40"></Image>
+                <TextBlock Grid.Row="1" Grid.Column="1" Name="name"/>
 
-                <TextBlock Grid.Row="2">Session Expires:</TextBlock>
-                <TextBlock Grid.Row="2" Grid.Column="1" Name="expires"/>
+                <Image Grid.Row="2" Source="Assets/ic_email_black.png" Height="40"></Image>
+                <TextBlock Grid.Row="2" Grid.Column="1" Name="email"/>
 
-                <Button Grid.Row="3" Click="Button_Click">Sign In Again</Button>
+                <Image Grid.Row="3" Source="Assets/ic_lock_outline_black.png" Height="40"></Image>
+                <TextBlock Grid.Row="3" Grid.Column="1" Name="expires"/>
+
+                <Button Grid.Row="4" Grid.ColumnSpan="2" Click="Button_Click" HorizontalAlignment="Stretch">Sign In Again</Button>
             </Grid>
         </StackPanel>
         <WebView x:Name="webView" Visibility="Collapsed"/>

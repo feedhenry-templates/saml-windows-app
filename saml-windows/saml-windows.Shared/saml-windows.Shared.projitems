@@ -20,6 +20,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Assets\ic_email_black.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\ic_face_black.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\ic_lock_outline_black.png" />
     <Content Include="$(MSBuildThisFileDirectory)fhconfig.json" />
   </ItemGroup>
 </Project>

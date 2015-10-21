@@ -1,11 +1,12 @@
 ﻿using FHSDK.Config;
-using FHSDKPortable;
 using Newtonsoft.Json.Linq;
 using System;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using FHSDK;
+using static FHSDKPortable.FHClient;
 
 namespace saml_windows
 {
@@ -20,14 +21,14 @@ namespace saml_windows
 
         private async void InitApp()
         {
-            await FHClient.Init();
+            await Init();
             progress.Visibility = Visibility.Collapsed;
             app.Visibility = Visibility.Visible;
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            var response = await FHClient.GetCloudRequest("sso/session/login_host", "POST", null, GetRequestParams()).ExecAsync();
+            var response = await FH.GetCloudRequest("sso/session/login_host", "POST", null, GetRequestParams()).ExecAsync();
 
             var resData = response.GetResponseAsJObject();
             var sso = (string)resData["sso"];
@@ -53,11 +54,11 @@ namespace saml_windows
             signIn.Visibility = Visibility.Collapsed;
             webView.Visibility = Visibility.Collapsed;
 
-            var response = await FHClient.GetCloudRequest("sso/session/valid", "POST", null, GetRequestParams()).ExecAsync();
+            var response = await FH.GetCloudRequest("sso/session/valid", "POST", null, GetRequestParams()).ExecAsync();
             if (response.Error == null)
             {
                 var data = response.GetResponseAsDictionary();
-                name.Text = string.Format("{0} {1}", data["first_name"], data["last_name"]);
+                name.Text = $"{data["first_name"]} {data["last_name"]}";
                 email.Text = (string) data["email"];
                 expires.Text = ((DateTime) data["expires"]).ToString();
             }
@@ -69,9 +70,7 @@ namespace saml_windows
 
         private static JObject GetRequestParams()
         {
-            var data = new JObject();
-            data.Add("token", FHConfig.GetInstance().GetDeviceId());
-            return data;
+            return new JObject { { "token", FHConfig.GetInstance().GetDeviceId() } };
         }
     }
 }

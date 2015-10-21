@@ -1,5 +1,7 @@
 # SAML Windows Client
 
+[![Build status](https://ci.appveyor.com/api/projects/status/5c9qgnprl14bxkla?svg=true)](https://ci.appveyor.com/project/edewit/saml-windows-app)
+
 ## What does the demo do?
 
 This is an example SAML Client App, designed to be used in conjunction with our [SAML Service](https://github.com/feedhenry-templates/saml-service). 

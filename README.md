@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/5c9qgnprl14bxkla?svg=true)](https://ci.appveyor.com/project/edewit/saml-windows-app)
+
 # SAML Windows Client
 
 ## What does the demo do?

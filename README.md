@@ -1,85 +1,42 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/5c9qgnprl14bxkla?svg=true)](https://ci.appveyor.com/project/edewit/saml-windows-app)
+# saml-windows-app [![Build status](https://ci.appveyor.com/api/projects/status/5c9qgnprl14bxkla?svg=true)](https://ci.appveyor.com/project/edewit/saml-windows-app)
 
-# SAML Windows Client
+Author: Erik Jan de Wit   
+Level: Intermediate  
+Technologies: C#, windows, RHMAP
+Summary: A demonstration of how to authenticate with SAML IdP with RHMAP. 
+Community Project : [Feed Henry](http://feedhenry.org)
+Target Product: RHMAP  
+Product Versions: RHMAP 3.7.0+   
+Source: https://github.com/feedhenry-templates/saml-window-app  
+Prerequisites: fh-dotnet-sdk : 3.+, Visual Studio : 2013/2015, windows mobile sdk
 
-## What does the demo do?
+## What is it?
 
-This is an example SAML Client App, designed to be used in conjunction with our [SAML Service](https://github.com/feedhenry-templates/saml-service). 
+Simple native Windows app to work with [```SAML Service``` connector service](https://github.com/feedhenry-templates/saml-service) in RHMAP. The user can login to the app using SAML authentication, user details available on SAML IdP are displayed once successfully logged in.To configure the service in your RHMAP platform read the [SAML notes](https://github.com/feedhenry-templates/saml-service/blob/master/NOTES.md).
 
-The Cloud App proxies the login client call to a SAML Service (e.g. fetching a URL to display in the WebView for IdP login) through the use of a SAML service (See Configuration section).
+If you do not have access to a RHMAP instance, you can sign up for a free instance at [https://openshift.feedhenry.com/](https://openshift.feedhenry.com/).
 
-The client app demoes the usage of the two SAML Service endpoints:
-- `sso/session/login_host` to get the SAML login page URL. A WebView is used to display the SAML login page.
-- `sso/session/valid` to get the user information once the login was successful. 
+## How do I run it?  
 
-Before running the project you will need some configuration.
+### RHMAP Studio
 
-## Configuration
+This application and its cloud services are available as a project template in RHMAP as part of the "SAML Project" template.
 
-As a pre-requisite, you need:
-- to have project created with SAML template
-- to have created and configured a SAML service in your RHMAP platform.
-All the pre-requisites steps are well described in the [SAML notes](https://github.com/feedhenry-templates/saml-service/blob/master/NOTES.md).
+### Local Clone (ideal for Open Source Development)
+If you wish to contribute to this template, the following information may be helpful; otherwise, RHMAP and its build facilities are the preferred solution.
 
-Here is the steps you will need to do on your client app in fh-ngui console:
-- Go to your SAML Demo project, associate it with your new SAML Service (click the + in the MBaaS Services area)
-- Pick your SAML Service, and click Associate
-- Navigate into your service and grab its "Service ID" (e.g. qhgvcppenzcquhlipr3dldat)
-- Go into your SAML Cloud app, choose Environment Variables icon on left hand side navigation
-- Add a new environement variable
-    - Name: SAML_SERVICE
-    - Value: YOUR_SERVICE_ID (e.g. qhgvcppenzcquhlipr3dldat)
-- Re-deploy your SAML Cloud app
+## Build instructions
 
-You should be good to go.
+1. Clone this project
 
-## Build and deploy your app
+2. Populate ```saml-windows/saml-windows.Shared/fhconfig.json``` with your values as explained [here](http://docs.feedhenry.com/v3/dev_tools/sdks/windows.html#windows-existing_app-set_up_configuration).
 
-Open VisualStudio project ```saml-windows.sln```.
-Run it.
+3. Open ```saml-windows.sln```
 
-## Code snippets and SAML usage
+4. Run the project
+ 
+## How does it work?
 
-### Login call
-When the user clicks the `Sign In` button, `sso/session/login_host` end point is called. The resulting `sso` url is loaded in the WebView. 
+### Using FHClient
+In this example we used ```FHClient.GetCloudRequest``` to make request on the REST endpoint setup to deal with SAML authentication.
 
-In ```saml-windows\saml-windows.Shared\MainPage.xaml.cs``` file, we define the ```Button_Click``` method called once the user hits login button, as below:
-
-```csharp
-private async void Button_Click(object sender, RoutedEventArgs e)
-{
-    var response = await FHClient.GetCloudRequest("sso/session/login_host", "POST", null, GetRequestParams()).ExecAsync();
-
-    var resData = response.GetResponseAsJObject();
-    var sso = (string)resData["sso"];
-    if (!string.IsNullOrEmpty(sso))
-    {
-        webView.Visibility = Visibility.Visible;
-        webView.Navigate(new Uri(sso));
-    }
-}
-```
-
-### User information call
-
-Once the user is successfully logged in, we can call `sso/session/valid` to fetch the user details. 
-
-In ```saml-windows\saml-windows.Shared\MainPage.xaml.cs```  file, we define the ```ShowSignedIn``` method called once the user is logged in and closes the WebView. In here we call the user information details.
-
-```csharp
-private async void ShowSignedIn()
-{
-    var response = await FHClient.GetCloudRequest("sso/session/valid", "POST", null, GetRequestParams()).ExecAsync();
-    if (response.Error == null)
-    {
-        var data = response.GetResponseAsDictionary();
-        name.Text = string.Format("{0} {1}", data["first_name"], data["last_name"]);
-        email.Text = (string) data["email"];
-        expires.Text = ((DateTime) data["expires"]).ToString();
-    }
-    else
-    {
-        await new MessageDialog(response.Error.ToString()).ShowAsync();
-    }
-}
-```
